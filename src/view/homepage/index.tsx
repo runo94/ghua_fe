@@ -1,7 +1,9 @@
 import {useState} from "react";
 
 import Map from "../../components/Map";
+// @ts-ignore
 import Sidebar from "../../components/Sidebar";
+// @ts-ignore
 import geoUrl from "../../components/Map/Ukraine-regions.json";
 
 
@@ -10,7 +12,7 @@ const HomePage = () => {
   const [show, setShow] = useState(false)
 
 
-  const toBcd = (number) => {
+  const toBcd = (number: number) => {
     let out = "", bit = 1;
     while (number >= bit) {
       out = (number & bit ? 1 : 0) + out;

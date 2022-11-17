@@ -15,9 +15,9 @@ const App = () => (
     <Routes>
       <Route path="/" element={<HomePage/>}/>
       <Route path="/login" element={<LoginPage/>}/>
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/profile" element={<UserPage />} />
-      <Route path="/settings" element={<UserSetting />} />
+      <Route path="/signup" element={<Signup/>}/>
+      <Route path="/profile" element={<UserPage/>}/>
+      <Route path="/settings" element={<UserSetting/>}/>
     </Routes>
     <Copyright sx={{ mt: 5 }}/>
   </>

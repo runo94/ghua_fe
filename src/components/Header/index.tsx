@@ -1,65 +1,84 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect, MouseEvent } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
+import AppBar from '@mui/material/AppBar'
+import Box from '@mui/material/Box'
+import Toolbar from '@mui/material/Toolbar'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
+import Menu from '@mui/material/Menu'
+import MenuIcon from '@mui/icons-material/Menu'
+import Container from '@mui/material/Container'
+import Avatar from '@mui/material/Avatar'
+import Button from '@mui/material/Button'
+import Tooltip from '@mui/material/Tooltip'
+import MenuItem from '@mui/material/MenuItem'
+import SportsSoccerIcon from '@mui/icons-material/SportsSoccer'
 
-import AuthService from '../../services/auth.service'
+// @ts-ignore
+import AuthService from '../../services/auth/auth.service'
+import { AppDispatch, RootState } from '../../store'
+import { asyncAuth, logout } from '../../store/authSlice'
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+const pages = [{ name: 'Test', url: '/test' }]
+const settings = [
+  { name: 'Profile', url: '/profile' }, {
+    name: 'Settings',
+    url: '/settings'
+  }]
 
-export const Header = ({ pages }) => {
-  const [anchorElNav, setAnchorElNav] = useState(null)
+const Header = () => {
+
+  const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
+  // const [currentUser, setCurrentUser] = useState(undefined)
+
   const navigate = useNavigate()
-  const [currentUser, setCurrentUser] = useState(undefined)
+  const dispatch: AppDispatch = useDispatch()
+  const isAuth = useSelector((state: RootState) => state.isAuth.isAuth)
+  const currUser = useSelector((state: RootState) => state.isAuth.currUser)
 
   useEffect(() => {
-    const user = AuthService.getCurrentUser()
-
-    if (user) {
-      setCurrentUser(user)
+    const accessToken = AuthService.getUserToken()
+    if (accessToken) {
+      dispatch(asyncAuth(accessToken))
     }
   }, [])
 
-  const logOut = () => {
-    AuthService.logout()
-    navigate('/');
-    window.location.reload();
+  const handleLogOut = () => {
+    dispatch(logout())
+    // AuthService.logout()
+    navigate('/')
+    // window.location.reload()
   }
 
-  const handleOpenNavMenu = (event) => {
+  const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget)
   }
+  const handleOpenUserMenu = (event: MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget)
+  }
 
-  const handleCloseNavMenu = (path) => {
+  const handleCloseNavMenu = () => {
     setAnchorElNav(null)
-    if (path) {
-      navigate(path)
-    }
+  }
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null)
   }
 
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          <SportsSoccerIcon
+            sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }}/>
           <Typography
+            href="/"
             variant="h6"
             noWrap
             component="a"
-            href="/"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -67,12 +86,11 @@ export const Header = ({ pages }) => {
               fontWeight: 700,
               letterSpacing: '.3rem',
               color: 'inherit',
-              textDecoration: 'none',
+              textDecoration: 'none'
             }}
           >
-            LOGO
+            GHUA
           </Typography>
-
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -82,68 +100,86 @@ export const Header = ({ pages }) => {
               onClick={handleOpenNavMenu}
               color="inherit"
             >
-              <MenuIcon />
+              <MenuIcon/>
             </IconButton>
             <Menu
               id="menu-appbar"
               anchorEl={anchorElNav}
               anchorOrigin={{
                 vertical: 'bottom',
-                horizontal: 'left',
+                horizontal: 'left'
               }}
               keepMounted
               transformOrigin={{
                 vertical: 'top',
-                horizontal: 'left',
+                horizontal: 'left'
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
               sx={{
-                display: { xs: 'block', md: 'none' },
+                display: { xs: 'block', md: 'none' }
               }}
             >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
+              {pages.map((page, index) => (
+                <NavLink key={`${page.name}${index}`} to={page.url}>
+                  <MenuItem
+                    onClick={handleCloseNavMenu}>
+                    <Typography textAlign="center">{page.name}</Typography>
+                  </MenuItem>
+                </NavLink>
               ))}
+              {isAuth && <NavLink key={`login-123`} to={'/login'}>
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">Login</Typography>
+                </MenuItem>
+              </NavLink>}
+              {isAuth && <NavLink key={'signup-123'} to={'/signup'}>
+                <MenuItem onClick={handleCloseNavMenu}>
+                  <Typography textAlign="center">SignUp</Typography>
+                </MenuItem>
+              </NavLink>}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-          <Typography
-            variant="h5"
-            noWrap
-            component="a"
-            href=""
-            sx={{
-              mr: 2,
-              display: { xs: 'flex', md: 'none' },
-              flexGrow: 1,
-              fontFamily: 'monospace',
-              fontWeight: 700,
-              letterSpacing: '.3rem',
-              color: 'inherit',
-              textDecoration: 'none',
-            }}
-          >
-            LOGO
-          </Typography>
+          <NavLink to="/">
+            <SportsSoccerIcon
+              sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }}/>
+          </NavLink>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {pages.map((page) => (
+            {pages.map((page, index) => (
+              <NavLink key={`${page.name}-${index}`} to={page.url}>
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: 'white', display: 'block' }}
+                >
+                  {page.name}
+                </Button>
+              </NavLink>
+
+            ))}
+
+            {!isAuth && <NavLink key={'login-321'} to={'/login'}>
               <Button
-                key={page}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                {page}
+                Login
               </Button>
-            ))}
+            </NavLink>}
+
+            {!isAuth && <NavLink key={'signup-321'} to={'/signup'}>
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: 'white', display: 'block' }}
+              >
+                Signup
+              </Button>
+            </NavLink>}
           </Box>
 
-          <Box sx={{ flexGrow: 0 }}>
+          {isAuth && <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt={!!currUser && currUser.username} src="/static/images/avatar/2.jpg"/>
               </IconButton>
             </Tooltip>
             <Menu
@@ -152,25 +188,36 @@ export const Header = ({ pages }) => {
               anchorEl={anchorElUser}
               anchorOrigin={{
                 vertical: 'top',
-                horizontal: 'right',
+                horizontal: 'right'
               }}
               keepMounted
               transformOrigin={{
                 vertical: 'top',
-                horizontal: 'right',
+                horizontal: 'right'
               }}
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
-                </MenuItem>
+              {settings.map((setting, index) => (
+                <NavLink key={`${setting.name}-${index}`} to={setting.url}>
+                  <MenuItem
+                    onClick={handleCloseUserMenu}>
+                    <Typography textAlign="center">{setting.name}</Typography>
+                  </MenuItem>
+                </NavLink>
               ))}
+              <MenuItem key={'logout-123'} onClick={() => {
+                handleCloseUserMenu()
+                handleLogOut()
+              }}>
+                <Typography textAlign="center">Logout</Typography>
+              </MenuItem>
             </Menu>
-          </Box>
+          </Box>}
         </Toolbar>
       </Container>
     </AppBar>
   )
 }
+
+export default Header

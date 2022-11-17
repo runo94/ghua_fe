@@ -3,8 +3,7 @@ import axios from 'axios'
 const API_URL = 'http://localhost:8080/api/ghua/auth/'
 
 class AuthService {
-
-  login (email, password) {
+  login (email: string, password: string) {
     return axios
     .post(API_URL + 'login', {
       email,
@@ -12,32 +11,32 @@ class AuthService {
     })
     .then(response => {
       if (response.data) {
-        localStorage.setItem('token', JSON.stringify(response.data.token))
-        localStorage.setItem('user', JSON.stringify(response.data.user))
+        localStorage.setItem('accessToken', JSON.stringify(response.data.accessToken))
+        localStorage.setItem('refreshToken', JSON.stringify(response.data.refreshToken))
       }
       return response.data
     })
   }
 
   logout () {
-    localStorage.removeItem('user')
-    localStorage.removeItem('token')
+    localStorage.removeItem('refreshToken')
+    localStorage.removeItem('accessToken')
   }
 
-  register (payload) {
+  register (payload: any) {
     return axios
     .post(API_URL + 'signup', payload)
     .then(response => {
       if (response.data) {
-        localStorage.setItem('token', JSON.stringify(response.data.token))
-        localStorage.setItem('user', JSON.stringify(response.data.user))
+        localStorage.setItem('accessToken', JSON.stringify(response.data.accessToken))
+        localStorage.setItem('refreshToken', JSON.stringify(response.data.refreshToken))
       }
       return response.data
     })
   }
 
-  getCurrentUser () {
-    return JSON.parse(localStorage.getItem('user'))
+  getUserToken () {
+    return JSON.parse(localStorage.getItem('accessToken'))
   }
 }
 

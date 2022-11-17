@@ -14,14 +14,16 @@ import {
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { useNavigate } from 'react-router-dom'
 import authService from '../../../services/auth/auth.service'
+import { SyntheticEvent } from 'react'
 
 const Signup = () => {
 
   const navigate = useNavigate ()
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e: SyntheticEvent) => {
+    e.preventDefault()
 
-    const data = new FormData(e.currentTarget);
+    let target = e.currentTarget as HTMLFormElement
+    const data = new FormData(target)
 
     const dataFormatted = {
       username: data.get('username'),
