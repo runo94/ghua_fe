@@ -1,23 +1,17 @@
-import React, { SyntheticEvent, useState } from 'react'
+import React, { useState } from 'react'
 import {ComposableMap, Geographies, Geography}  from "react-simple-maps";
 
 
 const Map = (props: any) => {
     const {geoUrl} = props
     const [obl, setObl] = useState(null);
-    const [clickedCity, setClickedCity] = useState(false);
 
     const handleSelectedObl = (e: any, selectedObl: any) => {
         const selectedDis = e.target;
         selectedDis.fill = 'red'
-        // e.target.fill = 'red'
         setObl(selectedObl);
-        setClickedCity(selectedObl.properties.NAME_1);
-        // handleObl(selectedObl.properties.NAME_1)
     }
-
-    // console.log(obl && obl.properties.NAME_1)
-    return (<div style={{position: 'relative', left: 0, width: `70%`, zIndex: 1}}>
+    return (<div style={{position: 'relative', left: 0, width: `50vw`, zIndex: 1}}>
         <ComposableMap height={500} width={900}>
             <Geographies geography={geoUrl}>
                 {({geographies}) => geographies.map(geo => {

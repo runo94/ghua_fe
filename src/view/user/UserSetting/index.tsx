@@ -6,32 +6,31 @@ import {
   Grid,
   TextField
 } from '@mui/material'
-import { useEffect, useState, FormEvent, SyntheticEvent } from 'react'
+import { useEffect, useState, SyntheticEvent } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { IUser } from '../IUser'
 
 import SendIcon from '@mui/icons-material/Send'
 import { AppDispatch, RootState } from '../../../store'
 import { asyncEditUser } from '../../../store/userSlice'
-import { asyncAuth } from '../../../store/authSlice'
+import {asyncAuth} from '../../../store/authSlice'
 import MySelect from '../../../components/Select'
 import locationService from '../../../services/location/location.service'
+import authService from "../../../services/auth/auth.service";
 
 const UserSetting = () => {
   const accessToken = JSON.parse(localStorage.getItem('accessToken'))
   const [districts, setDistricts] = useState([])
   const [cities, setCities] = useState([])
-  const [changes, setChanges] = useState()
   const currUser = useSelector((state: RootState) => state.isAuth.currUser)
   const dispatch: AppDispatch = useDispatch()
   const updatedUser = useSelector((state: RootState) => state.user.updated)
 
   useEffect(() => {
     dispatch(asyncAuth(accessToken))
-  }, [dispatch, updatedUser])
+    authService.refreshJWT()
+  }, [dispatch, updatedUser, accessToken])
 
   useEffect(() => {
-    console.log(currUser)
     locationService.getAllDistricts().then((res) => {
       setDistricts(res.data)
     })

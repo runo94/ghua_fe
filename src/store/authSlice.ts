@@ -16,6 +16,13 @@ export const asyncAuth = createAsyncThunk(
   }
 )
 
+// export const asyncRefreshToken = createAsyncThunk(
+//   'auth/refreshtoken',
+//   async (payload: any, thunkAPI) => {
+//     return await authService.refreshJWT(payload)
+//   }
+// )
+
 const authSlice = createSlice({
   name: 'auth',
   initialState: {

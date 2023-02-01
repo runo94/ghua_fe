@@ -25,17 +25,9 @@ class UserService {
       }
     })
     .then(response => {
-      // if (response.data) {
-      //   localStorage.setItem('token', JSON.stringify(response.data.token))
-      //   localStorage.setItem('user', JSON.stringify(response.data.user))
-      // }
       return response.data
     })
   }
-
-  // getCurrentUser () {
-  //   return JSON.parse(localStorage.getItem('user'))
-  // }
 }
 
 export default new UserService()

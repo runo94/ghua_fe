@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import authService from '../services/auth/auth.service'
 import userService from '../services/user/user.service'
 
 export const asyncEditUser = createAsyncThunk(
@@ -18,7 +17,7 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     // Add reducers for additional action types here, and handle loading state
     // as needed
-    builder.addCase(asyncEditUser.fulfilled, (state, action) => {
+    builder.addCase(asyncEditUser.fulfilled, (state) => {
       // Add user to the state array
       state.updated = true
     })
