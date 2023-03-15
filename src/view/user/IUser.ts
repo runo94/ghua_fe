@@ -9,5 +9,5 @@ export interface IUser {
   district_id?: string,
   city_id?: string,
   team_id?: string,
-  album_id?: string,
+  album_id?: number,
 }
